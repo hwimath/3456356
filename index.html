@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>영어 단어 퀴즈</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+    }
+    input {
+      margin-top: 10px;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .feedback {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2>영어 단어 퀴즈</h2>
+    <p id="question"></p>
+    <input type="text" id="answer" placeholder="정답을 입력하세요" autocomplete="off" />
+    <button onclick="checkAnswer()">제출</button>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <script>
+    const words = [
+      { korean: "엑스레이", english: "x-ray" },
+      { korean: "사진", english: "picture" },
+      { korean: "팔", english: "arm" },
+      { korean: "깁스", english: "cast" },
+      { korean: "축구", english: "soccer" },
+      { korean: "보여주다", english: "show" },
+      { korean: "서명하다", english: "sign" },
+      { korean: "부러진", english: "broken" }
+    ];
+
+    let currentWord;
+    let hint;
+
+    function getRandomHint(word) {
+      const letters = word.split('');
+      const indices = Array.from({ length: word.length }, (_, i) => i);
+      indices.sort(() => Math.random() - 0.5); // 랜덤 정렬
+      const hintIndices = indices.slice(0, 2); // 두 개의 인덱스 선택
+
+      let hintArray = letters.map((letter, index) =>
+        hintIndices.includes(index) ? letter : '_'
+      );
+
+      return hintArray.join('');
+    }
+
+    function nextQuestion() {
+      const randomIndex = Math.floor(Math.random() * words.length);
+      currentWord = words[randomIndex];
+      hint = getRandomHint(currentWord.english);
+
+      document.getElementById('question').textContent = 
+        `뜻: ${currentWord.korean} / 힌트: ${hint}`;
+      document.getElementById('answer').value = '';
+      document.getElementById('feedback').textContent = '';
+    }
+
+    function checkAnswer() {
+      const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+      const correctAnswer = currentWord.english.toLowerCase();
+
+      if (userAnswer === correctAnswer) {
+        document.getElementById('feedback').textContent = '정답입니다!';
+      } else {
+        document.getElementById('feedback').textContent = 
+          `틀렸습니다. 정답은 "${correctAnswer}"입니다.`;
+      }
+
+      setTimeout(nextQuestion, 2000); // 2초 후 다음 문제로 넘어가기
+    }
+
+    nextQuestion();
+  </script>
+</body>
+</html>
